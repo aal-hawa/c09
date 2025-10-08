@@ -2,9 +2,22 @@
 #include <cstdlib>
 #include <limits>
 
+
+BitcoinExchange::BitcoinExchange() {}
+
 BitcoinExchange::BitcoinExchange(const std::string &dbFile)
 {
 	loadDatabase(dbFile);
+}
+BitcoinExchange::BitcoinExchange(const BitcoinExchange& other)
+{
+	_exchangeRates = other._exchangeRates;
+}
+BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &other)
+{
+	if (this != &other)
+		_exchangeRates = other._exchangeRates;
+	return *this;
 }
 
 BitcoinExchange::~BitcoinExchange() {}
@@ -15,7 +28,8 @@ void BitcoinExchange::loadDatabase(const std::string &dbFile)
 	if (!file.is_open())
 	{
 		std::cerr << "Error: could not open database file." <<std::endl;
-		exit(1); // becureull with exit with leak
+		// exit(1); // becureull with exit with leak
+		return;
 	}
 
 	std::string line;
@@ -38,7 +52,23 @@ bool BitcoinExchange::isValidDate(const std::string &date) const
 	int y, m, d;
 
 	std::sscanf(date.c_str(), "%d-%d-%d", &y, &m, &d);
-	return y >= 2009 && m >= 1 && m <= 12 && d >= 1 && d <= 31;
+	if ( y < 2009 )
+		return false;
+
+	if (m < 1 || m > 12)
+		return false;
+
+	int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30 ,31 ,30, 31 };
+
+	// Leap year adjustment for February
+	if ( ( y% 4 == 0 && y % 100 != 0) || (y % 400 == 0))
+		daysInMonth[1] = 29;
+
+	if (d < 1 || d > daysInMonth[m - 1])
+		return false;
+
+	return true;
+
 }
 
 bool BitcoinExchange::isValidValue(const std::string &valueStr) const
@@ -68,6 +98,8 @@ std::string BitcoinExchange::findClosesDate(const std::string &date) const
 
 void BitcoinExchange::eveluate(const std::string &inputFile)
 {
+	if (_exchangeRates.size() == 0)
+		return;
 	std::ifstream file(inputFile.c_str());
 	if (!file.is_open())
 	{

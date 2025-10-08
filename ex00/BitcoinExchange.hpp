@@ -9,7 +9,10 @@
 class BitcoinExchange
 {
 	public:
+		BitcoinExchange();
 		BitcoinExchange(const std::string &dbFile);
+		BitcoinExchange(const BitcoinExchange& other);
+		BitcoinExchange &operator=(const BitcoinExchange & other);
 		~BitcoinExchange();
 
 		void eveluate(const std::string &inputFile);
