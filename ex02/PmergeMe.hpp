@@ -19,10 +19,13 @@ class PmergeMe
 	private:
 		static std::vector<int> parseInput(int argc, char** argv);
 		static void validateNumber(const std::string& str);
-		static void fordJohnsonSortVector(std::vector<int>& vec);
-		static void fordJohnsonSortDeque(std::deque<int>& deq);
 		static void display(const std::string& label, const std::vector<int>& vec);
-		
-};
+		static std::vector<int> fordJohnsonSortVector(const std::vector<int>& vec);
+		static std::vector<int> mergeInsert(const std::vector<int> &S, std::vector<int> L);
+		static std::vector<size_t> jacobsthalSequance(size_t n); 
 
+
+		static void fordJohnsonSortDeque(std::deque<int>& deq);
+	};
+	
 #endif

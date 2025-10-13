@@ -61,12 +61,12 @@ void PmergeMe::display(const std::string& label, const std::vector<int>& vec)
 	std::cout << std::endl;
 }
 
-void PmergeMe::fordJohnsonSortVector(std::vector<int>& vec)
+std::vector<int> PmergeMe::fordJohnsonSortVector(const std::vector<int>& vec)
 {
 	if (vec.size() <= 1)
-		return;
+		return vec;
 	
-	std::vector<int> left, right;
+	std::vector<int> S, L;
 
 	for(size_t i = 0; i < vec.size(); i +=2)
 	{
@@ -74,23 +74,61 @@ void PmergeMe::fordJohnsonSortVector(std::vector<int>& vec)
 		{
 			if (vec[i] < vec[i + 1])
 			{
-				left.push_back(vec[i]);
-				right.push_back(vec[i + 1]);
+				S.push_back(vec[i]);
+				L.push_back(vec[i + 1]);
 			}
 			else
 			{
-				left.push_back(vec[i + 1]);
-				right.push_back(vec[i]);
+				S.push_back(vec[i + 1]);
+				L.push_back(vec[i]);
 			}
 		}
 		else{
-			left.push_back(vec[i]);
+			S.push_back(vec[i + 1]);
 		}
 	}
-	fordJohnsonSortVector(right);
-	for (size_t i = 0; i < left.size(); ++i)
-		right.insert(std::lower_bound(right.begin(), right.end(), left[i]),left[i]);
-	vec = right;
+	L = fordJohnsonSortVector(L);
+	// for (size_t i = 0; i < S.size(); ++i)
+	// 	L.insert(std::lower_bound(L.begin(), L.end(), S[i]),S[i]);
+	// vec = L;
+	return mergeInsert(S, L);
+}
+
+std::vector<int> PmergeMe::mergeInsert(const std::vector<int> &S, std::vector<int> L)
+{
+	std::vector<size_t> order = jacobsthalSequance(S.size());
+	for (size_t i = 0; i < order.size(); ++i)
+	{
+		size_t index = order[i];
+		if (index < S.size())
+		{
+			int value = S[index];
+			L.insert(std::lower_bound(L.begin(), L.end(), value), value);
+		}
+	}
+	return L;
+}
+std::vector<size_t> PmergeMe::jacobsthalSequance(size_t n)
+{
+	std::vector<size_t> seq;
+	if(n == 0) return seq;
+	seq.push_back(0);
+	if (n == 1) return seq;
+
+	size_t j1 = 1, j2 = 0;
+	while (true)
+	{
+		size_t next = j1 + 2 * j2;
+		if (next >= n) break;
+		seq.push_back(next);
+		j2 = j1;
+		j1 = next;
+	}
+
+	for (size_t i = 0; i < n; ++i)
+		if (std::find(seq.begin(), seq.end(), i) == seq.end())
+			seq.push_back(i);
+	return seq;
 }
 
 void PmergeMe::fordJohnsonSortDeque(std::deque<int>& deq)
