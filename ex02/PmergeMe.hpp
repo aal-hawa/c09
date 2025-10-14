@@ -10,6 +10,9 @@
 #include <iomanip>
 #include <algorithm>
 #include <iterator>
+#include <cstdlib>      // for atoi, atol
+#include <climits>      // for INT_MAX
+#include <cctype>       // for isdigit
 
 class PmergeMe
 {
@@ -25,7 +28,9 @@ class PmergeMe
 		static std::vector<size_t> jacobsthalSequance(size_t n); 
 
 
-		static void fordJohnsonSortDeque(std::deque<int>& deq);
+		static std::deque<int> fordJohnsonSortDeque(const std::deque<int>& deq);
+		static std::deque<int> mergeInsertDeque(const std::deque<int> &S, std::deque<int> L);
+
 	};
 	
 #endif

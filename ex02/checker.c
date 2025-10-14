@@ -3,6 +3,9 @@
 #include <string.h>
 #include <ctype.h>
 
+// to compiler:
+// gcc -std=c11 -O2 -o checker checker.c
+
 static void trim_inplace(char *s)
 {
     // trim leading
@@ -37,7 +40,7 @@ int main(void)
 
     // 1) Generate input: 3000 random ints 1..100000 written as space-separated to input.txt
     //    You can change the shuf parameters if you want different sizes.
-    rc = system("shuf -i 1-100000 -n 5 | tr '\\n' ' ' > input.txt");
+    rc = system("shuf -i 1-100000 -n 3000 | tr '\\n' ' ' > input.txt");
     if (rc != 0) {
         fprintf(stderr, "Error: failed to generate input with shuf (exit %d)\n", rc);
         return 2;

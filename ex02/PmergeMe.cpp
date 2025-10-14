@@ -11,11 +11,11 @@ void PmergeMe::run(int argc, char** argv)
 
 	clock_t startVec = clock();
 
-	fordJohnsonSortVector(vec);
+	vec = fordJohnsonSortVector(vec);
 	clock_t endVec = clock();
 
 	clock_t startDeq = clock();
-	fordJohnsonSortDeque(deq);
+	deq = fordJohnsonSortDeque(deq);
 	clock_t endDec = clock();
 
 	display("After", vec);
@@ -34,7 +34,8 @@ std::vector<int> PmergeMe::parseInput(int argc, char** argv)
 	for (int i = 1; i < argc; ++i)
 	{
 		validateNumber(argv[i]);
-		int value = std::stoi(argv[i]);
+		// int value = std::stoi(argv[i]);
+		int value = std::atoi(argv[i]);
 		result.push_back(value);
 	}
 	return result;
@@ -42,10 +43,22 @@ std::vector<int> PmergeMe::parseInput(int argc, char** argv)
 
 void PmergeMe::validateNumber(const std::string& str)
 {
-	if (str.empty() || !std::all_of(str.begin(), str.end(), ::isdigit))
+	// if (str.empty() || !std::all_of(str.begin(), str.end(), ::isdigit))
+	// 	throw std::runtime_error("Error: Invalid input -> " + str);
+	// long num = std::stol(str);
+	// if (num < 0 || num > INT32_MAX)
+	// 	throw std::runtime_error("Error: Out of range -> " + str);
+
+	if (str.empty())
 		throw std::runtime_error("Error: Invalid input -> " + str);
-	long num = std::stol(str);
-	if (num < 0 || num > INT32_MAX)
+	
+	for(size_t i = 0; i < str.size(); ++i)
+	{
+		if (!std::isdigit(str[i]))
+			throw std::runtime_error("Error: Invalid input -> " + str);
+	}
+	long num = std::atol(str.c_str());
+	if (num < 0 || num > INT_MAX)
 		throw std::runtime_error("Error: Out of range -> " + str);
 }
 
@@ -84,7 +97,7 @@ std::vector<int> PmergeMe::fordJohnsonSortVector(const std::vector<int>& vec)
 			}
 		}
 		else{
-			S.push_back(vec[i + 1]);
+			S.push_back(vec[i]);
 		}
 	}
 	L = fordJohnsonSortVector(L);
@@ -108,6 +121,22 @@ std::vector<int> PmergeMe::mergeInsert(const std::vector<int> &S, std::vector<in
 	}
 	return L;
 }
+
+std::deque<int> PmergeMe::mergeInsertDeque(const std::deque<int> &S, std::deque<int> L)
+{
+	std::vector<size_t> order = jacobsthalSequance(S.size());
+	for (size_t i = 0; i < order.size(); ++i)
+	{
+		size_t index = order[i];
+		if (index < S.size())
+		{
+			int value = S[index];
+			L.insert(std::lower_bound(L.begin(), L.end(), value), value);
+		}
+	}
+	return L;
+}
+
 std::vector<size_t> PmergeMe::jacobsthalSequance(size_t n)
 {
 	std::vector<size_t> seq;
@@ -131,12 +160,12 @@ std::vector<size_t> PmergeMe::jacobsthalSequance(size_t n)
 	return seq;
 }
 
-void PmergeMe::fordJohnsonSortDeque(std::deque<int>& deq)
+std::deque<int> PmergeMe::fordJohnsonSortDeque(const std::deque<int>& deq)
 {
 	if (deq.size() <= 1)
-		return;
+		return deq;
 	
-	std::deque<int> left,  right;
+	std::deque<int> S,  L;
 	
 	for (size_t i = 0; i < deq.size(); i += 2)
 	{
@@ -144,21 +173,22 @@ void PmergeMe::fordJohnsonSortDeque(std::deque<int>& deq)
 		{
 			if (deq[i] < deq[i + 1])
 			{
-				left.push_back(deq[i]);
-				right.push_back(deq[i + 1]);
+				S.push_back(deq[i]);
+				L.push_back(deq[i + 1]);
 			}
 			else{
-				left.push_back(deq[i + 1]);
-				right.push_back(deq[i]);
+				S.push_back(deq[i + 1]);
+				L.push_back(deq[i]);
 			}
 		}
 		else 
 		{
-			left.push_back(deq[i]);
+			S.push_back(deq[i]);
 		}
 	}
-	fordJohnsonSortDeque(right);
-	for (size_t i = 0; i < left.size(); ++i)
-		right.insert(std::lower_bound(right.begin(), right.end(), left[i]), left[i]);
-	deq = right;
+	L = fordJohnsonSortDeque(L);
+	// for (size_t i = 0; i < S.size(); ++i)
+	// 	L.insert(std::lower_bound(L.begin(), L.end(), S[i]), S[i]);
+	// deq = L;
+	return mergeInsertDeque(S, L);
 }
