@@ -25,6 +25,7 @@ class BitcoinExchange
 		std::string trim (const std::string &str) const;
 		std::string findClosesDate(const std::string &date) const;
 		void loadDatabase(const std::string &dbFile);
+	
 };
 
 #endif

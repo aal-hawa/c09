@@ -22,6 +22,7 @@ BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &other)
 
 BitcoinExchange::~BitcoinExchange() {}
 
+// update the loadDatabase function to checked with corret parsing
 void BitcoinExchange::loadDatabase(const std::string &dbFile)
 {
 	std::ifstream file(dbFile.c_str());
@@ -69,15 +70,65 @@ bool BitcoinExchange::isValidDate(const std::string &date) const
 	return true;
 
 }
-
 bool BitcoinExchange::isValidValue(const std::string &valueStr) const
 {
-	char *end;
-	float val = std::strtof(valueStr.c_str(), &end);
-	if (*end != '\0' || val < 0.0f || val > 1000.0f)
+	size_t i = 0;
+
+	if (valueStr.empty())
+	{
+		std::cerr << "Error: bad input." << std::endl;
 		return false;
+	}
+
+	if (valueStr[0] == '+')
+		i = 1;
+	if (valueStr[0] == '-')
+	{
+		std::cerr << "Error: not a positive number." << std::endl;
+		return false;
+	}
+	
+	bool isDotFound = false;
+	bool isHasDigit = false;
+
+	for (; i < valueStr.size(); ++i)
+	{
+		char c = valueStr[i];
+		if (c == '.')
+		{
+			if (isDotFound)
+			{
+				std::cerr << "Error: bad input." << std::endl;
+				
+				return false;
+			}
+			isDotFound = 1;
+		}
+
+		else if (std::isdigit(c))
+			isHasDigit = true;
+		else
+		{
+			std::cerr << "Error: bad input." << std::endl;
+			return false;
+		}
+	}
+
+	if(!isHasDigit)
+	{
+		std::cerr << "Error: bad input." << std::endl;
+		return false;
+	}
+	double value = std::atof(valueStr.c_str());
+	if (value > 1000.0)
+	{
+		std::cerr << "Error: too large a number." << std::endl;
+		return false;
+	}
 	return true;
 }
+
+
 
 std::string BitcoinExchange::trim (const std::string &str) const{
 
@@ -125,13 +176,7 @@ void BitcoinExchange::eveluate(const std::string &inputFile)
 		}
 
 		if (!isValidValue(valueStr))
-		{
-			if (valueStr.find('-') != std::string::npos)
-				std::cerr << "Error: not a positive number." << std::endl;
-			else
-				std::cerr << "Error: too large a number." << std::endl;
 			continue;
-		}
 
 		float value = std::strtof(valueStr.c_str(), NULL);
 		std::string closesDate = findClosesDate(date);
