@@ -2,7 +2,6 @@ NAME = PmergeMe
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-# CXXFLAGS = -Wall -Wextra -Werror
 
 SRC = main.cpp PmergeMe.cpp
 OBJ = $(SRC:.cpp=.o)
@@ -19,3 +18,6 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+
+.PHONY: all clean fclean re

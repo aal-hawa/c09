@@ -5,6 +5,7 @@
 
 // to compiler:
 // gcc -std=c11 -O2 -o checker checker.c
+// compile your prgram and make this command: ./checker
 
 static void trim_inplace(char *s)
 {

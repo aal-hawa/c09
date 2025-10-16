@@ -28,7 +28,6 @@ void BitcoinExchange::loadDatabase(const std::string &dbFile)
 	if (!file.is_open())
 	{
 		std::cerr << "Error: could not open database file." <<std::endl;
-		// exit(1); // becureull with exit with leak
 		return;
 	}
 

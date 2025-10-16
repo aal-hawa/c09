@@ -1,5 +1,17 @@
 #include "PmergeMe.hpp"
 
+PmergeMe::PmergeMe() {}
+
+PmergeMe::PmergeMe(const PmergeMe &other) { (void) other;}
+
+PmergeMe &PmergeMe::operator=(const PmergeMe &other)
+{
+	(void) other;
+	return *this;
+}
+
+PmergeMe::~PmergeMe() {}
+
 void PmergeMe::run(int argc, char** argv)
 {
 	std::vector<int> input = parseInput(argc, argv);
@@ -43,12 +55,6 @@ std::vector<int> PmergeMe::parseInput(int argc, char** argv)
 
 void PmergeMe::validateNumber(const std::string& str)
 {
-	// if (str.empty() || !std::all_of(str.begin(), str.end(), ::isdigit))
-	// 	throw std::runtime_error("Error: Invalid input -> " + str);
-	// long num = std::stol(str);
-	// if (num < 0 || num > INT32_MAX)
-	// 	throw std::runtime_error("Error: Out of range -> " + str);
-
 	if (str.empty())
 		throw std::runtime_error("Error: Invalid input -> " + str);
 	
@@ -101,9 +107,6 @@ std::vector<int> PmergeMe::fordJohnsonSortVector(const std::vector<int>& vec)
 		}
 	}
 	L = fordJohnsonSortVector(L);
-	// for (size_t i = 0; i < S.size(); ++i)
-	// 	L.insert(std::lower_bound(L.begin(), L.end(), S[i]),S[i]);
-	// vec = L;
 	return mergeInsert(S, L);
 }
 
@@ -136,7 +139,7 @@ std::deque<int> PmergeMe::mergeInsertDeque(const std::deque<int> &S, std::deque<
 	}
 	return L;
 }
-
+// J(0)=0,J(1)=1,J(n)=J(n−1)+2⋅J(n−2) for n≥2
 std::vector<size_t> PmergeMe::jacobsthalSequance(size_t n)
 {
 	std::vector<size_t> seq;
@@ -187,8 +190,6 @@ std::deque<int> PmergeMe::fordJohnsonSortDeque(const std::deque<int>& deq)
 		}
 	}
 	L = fordJohnsonSortDeque(L);
-	// for (size_t i = 0; i < S.size(); ++i)
-	// 	L.insert(std::lower_bound(L.begin(), L.end(), S[i]), S[i]);
-	// deq = L;
+	
 	return mergeInsertDeque(S, L);
 }

@@ -20,6 +20,12 @@ class PmergeMe
 		static void run(int argc, char** arhgv);
 	
 	private:
+		PmergeMe();
+		PmergeMe(const PmergeMe &other);
+		PmergeMe &operator=(const PmergeMe &other);
+		~PmergeMe();
+
+
 		static std::vector<int> parseInput(int argc, char** argv);
 		static void validateNumber(const std::string& str);
 		static void display(const std::string& label, const std::vector<int>& vec);
