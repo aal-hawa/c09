@@ -40,7 +40,26 @@ void BitcoinExchange::loadDatabase(const std::string &dbFile)
 		std::string date, value;
 		if (std::getline(ss, date, ',') && std::getline(ss, value))
 		{
-			_exchangeRates[trim(date)] = std::strtof(value.c_str(), NULL);
+			date = trim(date);
+			value = trim(value);
+
+			if (!isValidDate(date))
+			{
+				std::cerr << "Error: bad date in database => " << date << std::endl;
+				continue;
+			}
+
+			if (!isNumeric(value))
+			{
+				std::cerr << "Error: bad value in database => " << value << std::endl;
+				continue;
+			}
+
+			_exchangeRates[date] = std::strtof(value.c_str(), NULL);
+		}
+		else 
+		{
+			std::cerr << "Error: malformed line in database => " << line << std::endl;
 		}
 	}
 }
@@ -102,7 +121,7 @@ bool BitcoinExchange::isValidValue(const std::string &valueStr) const
 				
 				return false;
 			}
-			isDotFound = 1;
+			isDotFound = true;
 		}
 
 		else if (std::isdigit(c))
@@ -128,7 +147,39 @@ bool BitcoinExchange::isValidValue(const std::string &valueStr) const
 	return true;
 }
 
+bool BitcoinExchange::isNumeric(const std::string &valueStr) const
+{
+	size_t i = 0;
 
+	if (valueStr.empty())
+		return false;
+
+
+	if (valueStr[0] == '+' )
+		i = 1;
+	if (valueStr[0] == '-')
+		return false;
+
+
+	bool isDotFound = false;
+	bool isHasDigit = false;
+
+	for (; i < valueStr.size(); ++i)
+	{
+		char c = valueStr[i];
+		if (c == '.')
+		{
+			if (isDotFound)
+				return false;
+			isDotFound = true;
+		}
+		else if (std::isdigit(c))
+			isHasDigit = true;
+		else
+			return false;
+	}
+	return isHasDigit;
+}
 
 std::string BitcoinExchange::trim (const std::string &str) const{
 

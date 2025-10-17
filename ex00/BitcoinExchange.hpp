@@ -22,6 +22,7 @@ class BitcoinExchange
 
 		bool isValidDate(const std::string &date) const;
 		bool isValidValue(const std::string &valueStr) const;
+		bool isNumeric(const std::string &valueStr) const;
 		std::string trim (const std::string &str) const;
 		std::string findClosesDate(const std::string &date) const;
 		void loadDatabase(const std::string &dbFile);
