@@ -34,6 +34,12 @@ void BitcoinExchange::loadDatabase(const std::string &dbFile)
 
 	std::string line;
 	std::getline(file, line); // skip header
+	if (line  != "date,exchange_rate")
+	{
+		std::cerr << "Error: wrong header format." <<std::endl;
+		return;
+	}
+	//date,exchange_rate
 	while (std::getline(file, line))
 	{
 		std::stringstream ss(line);
@@ -209,6 +215,12 @@ void BitcoinExchange::eveluate(const std::string &inputFile)
 	}
 	std::string line;
 	std::getline(file, line);
+	
+	if (line != "date | value")
+	{
+		std::cerr << "Error: wrong header format." <<std::endl;
+		return;
+	}
 	while (std::getline(file, line))
 	{
 		size_t pipePos = line.find('|');
