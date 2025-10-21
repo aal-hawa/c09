@@ -10,9 +10,9 @@
 #include <iomanip>
 #include <algorithm>
 #include <iterator>
-#include <cstdlib>      // for atoi, atol
-#include <climits>      // for INT_MAX
-#include <cctype>       // for isdigit
+#include <cstdlib>
+#include <climits>
+#include <cctype>
 
 class PmergeMe
 {
